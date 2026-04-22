@@ -1,4 +1,4 @@
-name: CI-cd-pipeline
+name: CI-CD-PIPELINE
 on:
   push:
     branches: [ main ]
@@ -7,24 +7,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:  [3.12]
     steps:
       - uses: actions/checkout@v4
-      - name: Use python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4          
+      - name: python application
+        uses: actions/setup-python@v4
         with:
-         python-version: ${{ matrix.python-version }}
+          python-version: 3.12
       - name: Install dev deps
         run: pip install -r requirements-dev.txt
 
       - name: Run tests
-        run: python -m pytest --cov=app --cov-report=xml    
+        run: python -m pytest --cov=app --cov-report=xml
 
-      - name: Build and push Docker image
+      - name: log in to docker hub
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }} 
+      - name: Build and push docker image
         uses: docker/build-push-action@v4
         with:
             context: .
             push: true
             tags: bigatiga/ci-cd-biga:latest
+            
