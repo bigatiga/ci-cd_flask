@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
       - name: python application
@@ -17,7 +18,7 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Run tests
-         run: python -m pytest --cov=app --cov-report=xml
+        run: python pytest --cov=app --cov-report=xml
 
       - name: log in to docker hub
         uses: docker/login-action@v4
